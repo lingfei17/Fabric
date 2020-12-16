@@ -1,6 +1,5 @@
 
-
-//    =============How to sign a transaction by an identity's private key============
+//=============How to sign a transaction by an identity's private key============
 
 // Step : 1 generate an unsigned transaction proposal with the identity's certificate
 
@@ -9,7 +8,7 @@ const mspId = 'Org1MSP'; // the msp Id for this org
 
 const transactionProposal = {
     fcn: 'move',
-    args: ['a', 'b', '100'],
+    args: ['a', 'b', '100'], 
     chaincodeId: 'mychaincodeId',
     channelId: 'mychannel',
 };

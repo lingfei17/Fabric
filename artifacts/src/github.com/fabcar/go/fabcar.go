@@ -42,6 +42,7 @@ var logger = flogging.MustGetLogger("fabcar_cc")
 func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response {
 
 	function, args := APIstub.GetFunctionAndParameters()
+
 	logger.Infof("Function name is:  %d", function)
 	logger.Infof("Args length is : %d", len(args))
 
@@ -62,8 +63,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.queryCarsByOwner(APIstub, args)
 	case "restictedMethod":
 		return s.restictedMethod(APIstub, args)
-	case "test":
-		return s.test(APIstub, args)
+	case "test2":
+		return s.test2(APIstub, args)
 	case "createPrivateCar":
 		return s.createPrivateCar(APIstub, args)
 	case "readPrivateCar":
@@ -140,7 +141,7 @@ func (s *SmartContract) readCarPrivateDetails(APIstub shim.ChaincodeStubInterfac
 	return shim.Success(carAsBytes)
 }
 
-func (s *SmartContract) test(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) test2(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")

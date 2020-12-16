@@ -18,6 +18,7 @@ const getCCP = async (org) => {
         return null
     const ccpJSON = fs.readFileSync(ccpPath, 'utf8')
     const ccp = JSON.parse(ccpJSON);
+    // console.log(ccp);
     return ccp
 }
 

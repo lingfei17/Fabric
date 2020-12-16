@@ -1,13 +1,15 @@
 
-chmod -R 0755 ./crypto-config
+# chmod -R 0755 ./crypto-config
 # Delete existing artifacts
-rm -rf ./crypto-config
-rm genesis.block mychannel.tx
-rm -rf ../../channel-artifacts/*
+# rm -rf ./crypto-config
+# rm genesis.block mychannel.tx
+# rm -rf ../../channel-artifacts/*
 
-#Generate Crypto artifactes for organizations
-cryptogen generate --config=./crypto-config.yaml --output=./crypto-config/
+# Generate Crypto artifactes for organizations
+# cryptogen generate --config=./crypto-config.yaml --output=./crypto-config/
 
+
+#====================================================================================
 
 
 # System channel

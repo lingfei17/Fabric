@@ -12,14 +12,12 @@ setGlobalsForOrderer() {
     export CORE_PEER_LOCALMSPID="OrdererMSP"
     export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/artifacts/channel/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
     export CORE_PEER_MSPCONFIGPATH=${PWD}/artifacts/channel/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp
-
 }
 
 setGlobalsForPeer0Org1() {
     export CORE_PEER_LOCALMSPID="Org1MSP"
     export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG1_CA
     export CORE_PEER_MSPCONFIGPATH=${PWD}/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
-    # export CORE_PEER_MSPCONFIGPATH=${PWD}/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
 }
 
@@ -28,7 +26,6 @@ setGlobalsForPeer1Org1() {
     export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG1_CA
     export CORE_PEER_MSPCONFIGPATH=${PWD}/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:8051
-
 }
 
 setGlobalsForPeer0Org2() {
@@ -36,7 +33,6 @@ setGlobalsForPeer0Org2() {
     export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
     export CORE_PEER_MSPCONFIGPATH=${PWD}/artifacts/channel/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
     export CORE_PEER_ADDRESS=localhost:9051
-
 }
 
 setGlobalsForPeer1Org2() {
@@ -44,9 +40,11 @@ setGlobalsForPeer1Org2() {
     export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
     export CORE_PEER_MSPCONFIGPATH=${PWD}/artifacts/channel/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
     export CORE_PEER_ADDRESS=localhost:10051
-
 }
 
+
+# ===============================================================================================================================================
+# install dependency
 presetup() {
     echo Vendoring Go dependencies ...
     pushd ./artifacts/src/github.com/fabcar/go
@@ -54,7 +52,6 @@ presetup() {
     popd
     echo Finished vendoring Go dependencies
 }
-# presetup
 
 CHANNEL_NAME="mychannel"
 CC_RUNTIME_LANGUAGE="golang"
@@ -62,16 +59,17 @@ VERSION="1"
 CC_SRC_PATH="./artifacts/src/github.com/fabcar/go"
 CC_NAME="fabcar"
 
+# 1
 packageChaincode() {
     rm -rf ${CC_NAME}.tar.gz
-    setGlobalsForPeer0Org1
     peer lifecycle chaincode package ${CC_NAME}.tar.gz \
         --path ${CC_SRC_PATH} --lang ${CC_RUNTIME_LANGUAGE} \
         --label ${CC_NAME}_${VERSION}
-    echo "===================== Chaincode is packaged on peer0.org1 ===================== "
+    echo "===================== Chaincode is packaged ===================== "
 }
 # packageChaincode
 
+# 2
 installChaincode() {
     setGlobalsForPeer0Org1
     peer lifecycle chaincode install ${CC_NAME}.tar.gz
@@ -89,9 +87,9 @@ installChaincode() {
     # peer lifecycle chaincode install ${CC_NAME}.tar.gz
     # echo "===================== Chaincode is installed on peer1.org2 ===================== "
 }
-
 # installChaincode
 
+# 3
 queryInstalled() {
     setGlobalsForPeer0Org1
     peer lifecycle chaincode queryinstalled >&log.txt
@@ -100,11 +98,12 @@ queryInstalled() {
     echo PackageID is ${PACKAGE_ID}
     echo "===================== Query installed successful on peer0.org1 on channel ===================== "
 }
-
 # queryInstalled
 
+
+
 # --collections-config ./artifacts/private-data/collections_config.json \
-#         --signature-policy "OR('Org1MSP.member','Org2MSP.member')" \
+# --signature-policy "OR('Org1MSP.member','Org2MSP.member')" \
 # --collections-config $PRIVATE_DATA_CONFIG \
 
 approveForMyOrg1() {
@@ -119,22 +118,7 @@ approveForMyOrg1() {
     # set +x
 
     echo "===================== chaincode approved from org 1 ===================== "
-
 }
-
-getBlock() {
-    setGlobalsForPeer0Org1
-    # peer channel fetch 10 -c mychannel -o localhost:7050 \
-    #     --ordererTLSHostnameOverride orderer.example.com --tls \
-    #     --cafile $ORDERER_CA
-
-    peer channel getinfo  -c mychannel -o localhost:7050 \
-        --ordererTLSHostnameOverride orderer.example.com --tls \
-        --cafile $ORDERER_CA
-}
-
-# getBlock
-
 # approveForMyOrg1
 
 # --signature-policy "OR ('Org1MSP.member')"
@@ -214,7 +198,6 @@ chaincodeInvokeInit() {
         --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
         --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
         --isInit -c '{"Args":[]}'
-
 }
 
 # chaincodeInvokeInit
@@ -282,10 +265,12 @@ chaincodeQuery() {
 
 # chaincodeQuery
 
+
+# ==================================================================
 # Run this function if you add any new dependency in chaincode
 # presetup
 
-packageChaincode
+# packageChaincode
 installChaincode
 queryInstalled
 approveForMyOrg1
